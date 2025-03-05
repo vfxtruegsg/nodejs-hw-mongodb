@@ -1,4 +1,5 @@
 import {
+  deleteContact,
   getAllContacts,
   getContactById,
   postContact,
@@ -72,4 +73,17 @@ export const patchContactController = async (req, res, next) => {
     message: 'Succesfully patch a contact!',
     data: data.contact,
   });
+};
+
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const data = await deleteContact(contactId);
+
+  if (!data) {
+    next(createHttpError(404, 'Contact not found!'));
+    return;
+  }
+
+  res.status(204).json();
 };
