@@ -25,7 +25,7 @@ const contactSchema = new Schema(
       enum: ['work', 'home', 'personal'],
     },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
 export const ContactCollection = model('contacts', contactSchema);
