@@ -5,7 +5,7 @@ export const getAllContacts = async ({
   page,
   perPage,
   sortBy,
-  sortOrder,
+  sortOrder = 'asc',
   filter,
 }) => {
   const limit = perPage;
@@ -13,12 +13,12 @@ export const getAllContacts = async ({
 
   const contactsQuery = ContactCollection.find();
 
-  if (filter.isFavouriteValue) {
-    contactsQuery.where('isFavourite').equals(filter.isFavouriteValue);
+  if (filter.isFavourite) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-  if (filter.contactTypeValue) {
-    contactsQuery.where('contactType').equals(filter.contactTypeValue);
+  if (filter.type) {
+    contactsQuery.where('contactType').equals(filter.type);
   }
 
   const contactsCount = await ContactCollection.find()

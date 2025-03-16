@@ -1,17 +1,20 @@
 const parseContactType = (value) => {
-  if (
-    typeof value !== 'string' ||
-    !['work', 'home', 'personal'].includes(value)
-  )
-    return;
+  const includesType = ['work', 'home', 'personal'].includes(value);
+
+  if (typeof value !== 'string' || !includesType) return;
 
   return value;
 };
 
 const parseIsFavourite = (value) => {
-  if (typeof value === 'undefined' || typeof gender === 'string') return;
+  const includesIsFavourite = ['true', 'false'].includes(value);
 
-  if (!['true', 'false'].includes(toString(value))) return;
+  if (
+    typeof value === 'undefined' ||
+    typeof value !== 'string' ||
+    !includesIsFavourite
+  )
+    return;
 
   return value;
 };
@@ -21,9 +24,11 @@ export const parseFilterParams = (query) => {
 
   const parsedContactType = parseContactType(contactType);
   const parsedIsFavourite = parseIsFavourite(isFavourite);
+  console.log('ContactType:', parsedContactType);
+  console.log('IsFavourite:', parsedIsFavourite);
 
   return {
-    isFavouriteValue: parsedIsFavourite,
-    contactTypeValue: parsedContactType,
+    isFavourite: parsedIsFavourite,
+    type: parsedContactType,
   };
 };
