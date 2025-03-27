@@ -88,11 +88,9 @@ export const refreshUser = async (sessionId, refreshToken) => {
 };
 
 export const requestResetToken = async (email) => {
-  const user = UserCollection.findOne(email);
+  const user = await UserCollection.findOne({ email });
 
-  if (!user) {
-    throw createHttpError(404, 'User not found!');
-  }
+  if (!user) throw createHttpError(404, 'User not found!');
 
   const resetToken = jwt.sign(
     {
@@ -101,9 +99,10 @@ export const requestResetToken = async (email) => {
     },
     getEnvVar('JWT_SECRET'),
     {
-      expiresIn: 300000,
+      expiresIn: '5m',
     },
   );
+  console.log(resetToken);
 
   const pathResetPasswordTemplate = path.join(
     TEMPLATES_DIR,
@@ -119,12 +118,21 @@ export const requestResetToken = async (email) => {
     link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
 
-  await sendEmail({
-    from: getEnvVar(SMTP.SMTP_FROM),
-    to: email,
-    subject: 'Reset your password',
-    html,
-  });
+  try {
+    await sendEmail({
+      from: getEnvVar(SMTP.SMTP_FROM),
+      to: email,
+      subject: 'Reset your password',
+      html,
+    });
+  } catch (error) {
+    if (error instanceof Error)
+      throw createHttpError(
+        500,
+        'Failed to send the email, please try again later.',
+      );
+    throw error.message;
+  }
 };
 
 export const resetPassword = async (payload) => {
@@ -138,14 +146,14 @@ export const resetPassword = async (payload) => {
     throw error;
   }
 
-  const user = UserCollection.findOne({
+  const user = await UserCollection.findOne({
     _id: payloadToken.sub,
     email: payloadToken.email,
   });
 
-  if (!user) {
-    throw createHttpError(404, 'User not found');
-  }
+  if (!user) throw createHttpError(404, 'User not found');
+
+  await SessionsCollection.deleteOne({ userId: user._id });
 
   const encryptedPassword = await bcrypt.hash(password, 10);
 
