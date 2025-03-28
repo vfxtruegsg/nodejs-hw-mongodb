@@ -9,6 +9,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { sendFileToCloudinary } from '../utils/sendFileToCloudinary.js';
 
 export const getAllContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -47,8 +48,18 @@ export const getContactsByIdController = async (req, res, next) => {
 };
 
 export const postContactController = async (req, res) => {
-  const data = await postContact({ ...req.body, userId: req.user.id });
-  console.log(req.body);
+  const photo = req.file;
+
+  let photoLink;
+  if (photo) {
+    photoLink = await sendFileToCloudinary(photo);
+  }
+
+  const data = await postContact({
+    ...req.body,
+    userId: req.user.id,
+    photo: photoLink,
+  });
 
   res
     .status(201)
@@ -58,12 +69,19 @@ export const postContactController = async (req, res) => {
 export const putContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
+  const photo = req.file;
+
+  let photoLink;
+  if (photo) {
+    photoLink = await sendFileToCloudinary(photo);
+  }
+
   const data = await updateContact(
     {
       id: contactId,
       userId: req.user.id,
     },
-    req.body,
+    { ...req.body, photo: photoLink },
     { upsert: true },
   );
 
@@ -82,12 +100,20 @@ export const putContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
+
+  const photo = req.file;
+
+  let photoLink;
+  if (photo) {
+    photoLink = await sendFileToCloudinary(photo);
+  }
+
   const data = await updateContact(
     {
       id: contactId,
       userId: req.user.id,
     },
-    req.body,
+    { ...req.body, photo: photoLink },
   );
 
   if (!data) {
