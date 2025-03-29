@@ -15,5 +15,3 @@ export const sendFileToCloudinary = async (file) => {
 
   return response.secure_url;
 };
-
-// oq/2MCYDiTrLPiP4s1z9z+YTlYLaI3SF8wOhQ0vi 67e6e79abc89b27ec8d8cbeb
