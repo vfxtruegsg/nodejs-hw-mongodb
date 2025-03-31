@@ -1,4 +1,5 @@
 import {
+  loginOrSignupWithGoogle,
   loginUser,
   logoutUser,
   refreshUser,
@@ -7,6 +8,7 @@ import {
   resetPassword,
 } from '../services/auth.js';
 import { setupSession } from '../utils/setupSession.js';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -72,5 +74,29 @@ export const resetPasswordController = async (req, res) => {
     status: 200,
     message: 'Password has been successfully reset.',
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: { url },
+  });
+};
+
+export const loginWithGoogleController = async (req, res) => {
+  const { code } = req.body;
+  const session = await loginOrSignupWithGoogle(code);
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
