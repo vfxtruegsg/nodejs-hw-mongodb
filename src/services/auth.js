@@ -12,6 +12,10 @@ import { createSession } from '../utils/createSession.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 export const registerUser = async (payload) => {
   const isNewUser = await UserCollection.findOne({ email: payload.email });
@@ -159,5 +163,31 @@ export const resetPassword = async (payload) => {
 
   return await UserCollection.findByIdAndUpdate(user._id, {
     password: encryptedPassword,
+  });
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+
+  if (!payload) throw createHttpError(401);
+
+  let user = await UserCollection.findOne({ email: payload.email });
+
+  if (!user) {
+    const password = bcrypt.hash(randomBytes(10), 10);
+    user = await UserCollection.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+      role: 'parent',
+    });
+  }
+
+  const newSession = createSession();
+
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...newSession,
   });
 };
