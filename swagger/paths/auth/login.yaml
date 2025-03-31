@@ -1,0 +1,54 @@
+tags:
+  - Auth
+summary: Login user
+operationId: loginUser
+description: 'User login to the application'
+security: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            description: "User's phone email"
+            type: string
+            example: 'qwerty123@gmail.com'
+          password:
+            description: "User's password"
+            type: string
+            example: 'fdaSfa4ld'
+responses:
+  '200':
+    description: Login to the application
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: successful login!
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: '8bs81eBdfURdzSkrnwH4/4Mc9aavbx7LauiiFhuz'
+  '404':
+    $ref: '../../components/responses/404.yaml'
+    description: 'User not found'
+  '500':
+    $ref: '../../components/responses/500.yaml'
