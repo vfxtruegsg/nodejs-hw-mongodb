@@ -47,5 +47,7 @@ responses:
             data:
               type: object
               $ref: '../../components/schemas/users.yaml'
+  '400':
+    $ref: ../../components/responses/400.yaml
   '500':
     $ref: '../../components/responses/500.yaml'

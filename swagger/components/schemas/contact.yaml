@@ -28,7 +28,7 @@ properties:
     example: true
     default: false
   contactType:
-    description: 'Contact type'
+    description: 'Contact`s type'
     type: string
     enum: ['work', 'home', 'personal']
     example: home

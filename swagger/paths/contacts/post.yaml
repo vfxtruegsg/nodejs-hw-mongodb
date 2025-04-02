@@ -31,9 +31,11 @@ requestBody:
             type: boolean
             example: false
           contactType:
-            description: 'Contact type: work, home or personal'
+            description: 'Contact`s type'
             type: string
+            enum: ['work', 'home', 'personal']
             example: home
+            default: personal
           photo:
             description: "Contact's photo"
             type: string
@@ -59,6 +61,8 @@ responses:
             data:
               type: object
               $ref: '../../components/schemas/contact.yaml'
+  '400':
+    $ref: ../../components/responses/400.yaml
   '401':
     $ref: '../../components/responses/401.yaml'
   '500':

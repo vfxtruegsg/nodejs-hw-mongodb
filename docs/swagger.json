@@ -219,9 +219,15 @@
                     "example": false
                   },
                   "contactType": {
-                    "description": "Contact type: work, home or personal",
+                    "description": "Contact`s type",
                     "type": "string",
-                    "example": "home"
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "example": "home",
+                    "default": "personal"
                   },
                   "photo": {
                     "description": "Contact's photo",
@@ -262,6 +268,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -472,6 +481,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "401": {
             "$ref": "#/components/responses/401"
           },
@@ -554,6 +566,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "500": {
             "$ref": "#/components/responses/500"
           }
@@ -632,6 +647,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "404": {
             "$ref": "#/components/responses/404",
             "description": "User not found"
@@ -654,6 +672,9 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401",
@@ -710,6 +731,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401",
@@ -770,7 +794,7 @@
             "default": false
           },
           "contactType": {
-            "description": "Contact type",
+            "description": "Contact`s type",
             "type": "string",
             "enum": [
               "work",
@@ -824,6 +848,43 @@
       }
     },
     "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "BadRequestError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "401": {
         "description": "Unauthorized error",
         "content": {

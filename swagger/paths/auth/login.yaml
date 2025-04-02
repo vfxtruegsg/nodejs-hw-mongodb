@@ -47,6 +47,8 @@ responses:
                 accessToken:
                   type: string
                   example: '8bs81eBdfURdzSkrnwH4/4Mc9aavbx7LauiiFhuz'
+  '400':
+    $ref: ../../components/responses/400.yaml
   '404':
     $ref: '../../components/responses/404.yaml'
     description: 'User not found'

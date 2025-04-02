@@ -29,6 +29,8 @@ responses:
                 accessToken:
                   type: string
                   example: '8bs81eBdfURdzSkrnwH4/4Mc9aavbx7LauiiFhuz'
+  '400':
+    $ref: ../../components/responses/400.yaml
   '401':
     $ref: '../../components/responses/401.yaml'
     description: 'Session not found'
